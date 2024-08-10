@@ -1,3 +1,6 @@
+
+![dollboxpm-logo](https://github.com/user-attachments/assets/0bcbb4c3-e426-44a8-958b-d564c4a618bf)
+
 # DollboxPM: A Go-based Package Manager
 =====================================================
 
@@ -32,6 +35,9 @@ Once you have built the project, you can use the `dollboxpm` command to manage y
 
 ## Contributing
 ---------------
+
+![dollboxpm-logo-pfp](https://github.com/user-attachments/assets/c829e890-e63e-4384-adfa-91c64f348e4a)
+
 
 ### Reporting Issues
 
