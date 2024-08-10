@@ -74,7 +74,7 @@ We would like to thank the Go community for their support and contributions to t
 ## Contact
 -------
 
-If you have any questions or need help with DollboxPM, please don't hesitate to reach out to us on our [issue tracker](https://github.com/dollboxpm/dollboxpm/issues) or on Twitter at [@your-twitter-handle](https://twitter.com/dollengo).
+If you have any questions or need help with DollboxPM, please don't hesitate to reach out to us on our [issue tracker](https://github.com/dollboxpm/dollboxpm/issues) or on Twitter at [@dollengo](https://twitter.com/dollengo).
 
 ## Changelog
 ------------
