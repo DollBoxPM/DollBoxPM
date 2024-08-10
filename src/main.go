@@ -130,4 +130,3 @@ func handleError(err error) {
 	fmt.Println("Please submit an issue to: https://github.com/DollBoxPM/DollBoxPM/issues")
 	os.Exit(1)
 }
-
