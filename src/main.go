@@ -14,34 +14,65 @@ import (
 )
 
 func main() {
-	fmt.Println("DollBoxPM - Package Manager")
-	fmt.Println("-----------------------------------")
+	if len(os.Args) < 2 {
+		fmt.Println("Usage: dollboxpm <command> [options]")
+		fmt.Println("Commands:")
+		fmt.Println("  install      Install a package")
+		fmt.Println("  list        List installed packages")
+		fmt.Println("  update      Update a package")
+		fmt.Println("  remove      Remove a package")
+		fmt.Println("  --help      Show this help message")
+		return
+	}
 
-	fmt.Println("Do you want to download the package from:")
-	fmt.Println("1. Repository (https://github.com/DollBoxPM/{package})")
-	fmt.Println("2. Branch of the repository (https://github.com/DollBoxPM/DollBoxPM)")
-
-	var option int
-	fmt.Scanln(&option)
-
-	switch option {
-	case 1:
-		downloadFromRepository()
-	case 2:
-		downloadFromBranch()
+	cmd := os.Args[1]
+	switch cmd {
+	case "install":
+		if len(os.Args) < 3 {
+			fmt.Println("Usage: dollboxpm install <repository|branch> <package name>")
+			return
+		}
+		installPackage(os.Args[2], os.Args[3])
+	case "list":
+		listPackages()
+	case "update":
+		if len(os.Args) < 3 {
+			fmt.Println("Usage: dollboxpm update <package name>")
+			return
+		}
+		updatePackage(os.Args[2])
+	case "remove":
+		if len(os.Args) < 3 {
+			fmt.Println("Usage: dollboxpm remove <package name>")
+			return
+		}
+		removePackage(os.Args[2])
+	case "--help":
+		fmt.Println("Usage: dollboxpm <command> [options]")
+		fmt.Println("Commands:")
+		fmt.Println("  install      Install a package")
+		fmt.Println("  list        List installed packages")
+		fmt.Println("  update      Update a package")
+		fmt.Println("  remove      Remove a package")
+		fmt.Println("  --help      Show this help message")
 	default:
-		fmt.Println("Invalid option. Please try again.")
+		fmt.Println("Unknown command:", cmd)
 		return
 	}
 }
 
-func downloadFromRepository() {
-	fmt.Println("Enter the package name:")
-	var packageName string
-	fmt.Scanln(&packageName)
+func installPackage(installType, packageName string) {
+	var repoURL string
+	if installType == "repository" {
+		repoURL = fmt.Sprintf("https://github.com/DollBoxPM/%s", packageName)
+	} else if installType == "branch" {
+		repoURL = "https://github.com/DollBoxPM/DollBoxPM"
+	} else {
+		fmt.Println("Invalid install type:", installType)
+		return
+	}
 
-	repoURL := fmt.Sprintf("https://github.com/DollBoxPM/%s", packageName)
-	fmt.Println("Downloading package from:", repoURL)
+	fmt.Println("Installing package from:", repoURL)
 
 	// Create a temporary directory to clone the repository
 	tmpDir, err := ioutil.TempDir("", "dollboxpm-")
@@ -58,27 +89,54 @@ func downloadFromRepository() {
 		log.Fatal(err)
 	}
 
-	// Copy the executable to the Linux executables directory
+	// Copy the executable to the packages directory
 	execPath := filepath.Join(tmpDir, packageName)
 	if _, err := os.Stat(execPath); os.IsNotExist(err) {
 		log.Fatal("Executable not found in repository.")
 	}
 
-	dstPath := "/usr/local/bin/" + packageName
+	dstPath := filepath.Join("packages", packageName)
 	if err := copyFile(execPath, dstPath); err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Package downloaded and installed successfully!")
+	fmt.Println("Package installed successfully!")
 }
 
-func downloadFromBranch() {
-	fmt.Println("Enter the branch name:")
-	var branchName string
-	fmt.Scanln(&branchName)
+func listPackages() {
+	fmt.Println("Installed packages:")
+	// List packages in the packages directory
+	packagesDir := "packages"
+	files, err := ioutil.ReadDir(packagesDir)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, file := range files {
+		fmt.Println(file.Name())
+	}
+}
 
-	repoURL := "https://github.com/DollBoxPM/DollBoxPM"
-	fmt.Println("Downloading package from:", repoURL)
+func updatePackage(packageName string) {
+	fmt.Println("Updating package:", packageName)
+	// Ask if the package was installed from a repository or branch
+	fmt.Println("Was the package installed from a repository or branch?")
+	fmt.Println("1. Repository")
+	fmt.Println("2. Branch")
+	var option int
+	fmt.Scanln(&option)
+
+	var repoURL string
+	if option == 1 {
+		repoURL = fmt.Sprintf("https://github.com/DollBoxPM/%s", packageName)
+	} else if option == 2 {
+		repoURL = "https://github.com/DollBoxPM/DollBoxPM"
+	} else {
+		fmt.Println("Invalid option. Please try again.")
+		return
+	}
+
+	// Update the package
+	fmt.Println("Updating package from:", repoURL)
 
 	// Create a temporary directory to clone the repository
 	tmpDir, err := ioutil.TempDir("", "dollboxpm-")
@@ -95,38 +153,5 @@ func downloadFromBranch() {
 		log.Fatal(err)
 	}
 
-	// Checkout to the specified branch
-	if err := repo.Checkout(&git.CheckoutOptions{
-		Branch: plumbing.NewBranchReferenceName(branchName),
-	}); err != nil {
-		log.Fatal(err)
-	}
-
-	// Copy the executable to the Linux executables directory
-	execPath := filepath.Join(tmpDir, "DollBoxPM")
-	if _, err := os.Stat(execPath); os.IsNotExist(err) {
-		log.Fatal("Executable not found in repository.")
-	}
-
-	dstPath := "/usr/local/bin/DollBoxPM"
-	if err := copyFile(execPath, dstPath); err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println("Package downloaded and installed successfully!")
-}
-
-func copyFile(src, dst string) error {
-	cmd := exec.Command("cp", src, dst)
-	output, err := cmd.CombinedOutput()
-	if err != nil {
-		return fmt.Errorf("error copying file: %s", output)
-	}
-	return nil
-}
-
-func handleError(err error) {
-	fmt.Println("Error:", err)
-	fmt.Println("Please submit an issue to: https://github.com/DollBoxPM/DollBoxPM/issues")
-	os.Exit(1)
-}
+	// Copy the executable to the packages directory
+	execPath := filepath
