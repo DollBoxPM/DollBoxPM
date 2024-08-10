@@ -57,10 +57,6 @@ We welcome contributions to DollboxPM! If you'd like to contribute code, please 
 
 We follow the official Go coding style guidelines. Please make sure to format your code using `go fmt` before submitting a pull request.
 
-### Testing
-
-We use Go's built-in testing framework to test DollboxPM. Please make sure to write tests for any new code you contribute.
-
 ## License
 -------
 
@@ -76,7 +72,3 @@ We would like to thank the Go community for their support and contributions to t
 
 If you have any questions or need help with DollboxPM, please don't hesitate to reach out to us on our [issue tracker](https://github.com/dollboxpm/dollboxpm/issues) or on Twitter at [@dollengo](https://twitter.com/dollengo).
 
-## Changelog
-------------
-
-See [CHANGELOG.md](CHANGELOG.md) for a list of changes and updates to DollboxPM.
