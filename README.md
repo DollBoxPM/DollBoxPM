@@ -7,7 +7,8 @@
 ## Introduction
 ---------------
 
-Made by [Dollengo](https://github.com/Dollengo/DollBoxPM)
+- Made by [Dollengo](https://github.com/Dollengo/DollBoxPM)
+- https://github.com/DollBoxPM/DollBoxPM is the main repository
 
 DollboxPM is a package manager written in Go that aims to provide a fast, reliable, and easy-to-use way to manage packages for your projects. This project is open-source and welcomes contributions from the community.
 
